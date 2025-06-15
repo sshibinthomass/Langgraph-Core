@@ -1,5 +1,7 @@
 import streamlit as st
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
 #Import the config file
 #from file location and name import class
@@ -26,11 +28,13 @@ class LoadStreamlitUI:
                 # Model selection
                 model_options = self.config.get_groq_model_options() #This is a list of Groq model options from the config file
                 self.user_controls["selected_groq_model"] = st.selectbox("Select Model", model_options) #This is the Groq model selection
-                self.user_controls["GROQ_API_KEY"] = st.session_state["GROQ_API_KEY"]=st.text_input("API Key",type="password") #This is in session state to store the API key and in the user controls to store the API key
-                # Validate API key
-                if not self.user_controls["GROQ_API_KEY"]:
-                    st.warning("⚠️ Please enter your GROQ API key to proceed. Don't have? refer : https://console.groq.com/keys ")
-            
+                self.user_controls["GROQ_API_KEY"] =os.getenv("GROQ_API_KEY")
+
+            if self.user_controls["selected_llm"] == 'Ollama': #This is the Ollama model selection
+                # Model selection
+                model_options = self.config.get_ollama_model_options() #This is a list of Ollama model options from the config file
+                self.user_controls["selected_ollama_model"] = st.selectbox("Select Model", model_options) #This is the Ollama model selection
+                self.user_controls["OLLAMA_BASE_URL"] = os.getenv("OLLAMA_BASE_URL")
             ## USecase selection
             self.user_controls["selected_usecase"]=st.selectbox("Select Usecases",usecase_options) #This is the Usecase selection from the config file
 

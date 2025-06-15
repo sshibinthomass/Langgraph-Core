@@ -7,7 +7,6 @@ class GroqLLM:
         self.user_controls_input=user_contols_input
 
     def get_llm_model(self):
-        #print(self.user_controls_input)
         try:
             groq_api_key=self.user_controls_input["GROQ_API_KEY"]
             selected_groq_model=self.user_controls_input["selected_groq_model"]
@@ -19,3 +18,23 @@ class GroqLLM:
         except Exception as e:
             raise ValueError(f"Error Ocuured With Exception : {e}")
         return llm
+
+if __name__ == "__main__":
+    # Example user_controls_input
+    user_controls_input = {
+        "GROQ_API_KEY": os.getenv("GROQ_API_KEY", ""),  # Use env var or set your key here
+        "selected_groq_model": "llama3-8b-8192"  # Replace with a valid model for your Groq account
+    }
+
+    groq_llm = GroqLLM(user_controls_input)
+    llm = groq_llm.get_llm_model()
+    print(type(llm))
+    #if llm:
+    ##    prompt = "What is the capital of France?"
+    #    try:
+    #        response = llm.invoke(prompt)
+    #        print("Response:", response)
+    #    except Exception as e:
+    #        print("Error during invocation:", e)
+    #else:
+    #    print("LLM could not be initialized.")

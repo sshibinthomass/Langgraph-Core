@@ -1,6 +1,7 @@
 import streamlit as st
 from src.langgraphagenticai.ui.streamlitui.loadui import LoadStreamlitUI
 from src.langgraphagenticai.LLMS.groqllm import GroqLLM
+from src.langgraphagenticai.LLMS.ollamallm import OllamaLLMWrapper
 from src.langgraphagenticai.graph.graph_builder import GraphBuilder
 from src.langgraphagenticai.ui.streamlitui.display_result import DisplayResultStreamlit
 
@@ -25,10 +26,17 @@ def load_langgraph_agenticai_app():
 
     if user_message:
         try:
+            print(user_input)
             ## Configure The LLM's
-            obj_llm_config=GroqLLM(user_contols_input=user_input) #calling the GroqLLM class and passing the user input to the class
-            model=obj_llm_config.get_llm_model() #Returns the LLM model
-
+            if user_input["selected_llm"] == "Groq":
+                obj_llm_config=GroqLLM(user_contols_input=user_input) #calling the GroqLLM class and passing the user input to the class
+                model=obj_llm_config.get_llm_model() #Returns the LLM model
+            elif user_input["selected_llm"] == "Ollama":
+                obj_llm_config=OllamaLLMWrapper(user_controls_input=user_input) # Use the wrapper class
+                model=obj_llm_config.get_llm_model() #Returns the LLM model
+            print("Hello")
+            print(model)
+            print("Hi")
             if not model:
                 st.error("Error: LLM model could not be initialized")
                 return
@@ -45,8 +53,7 @@ def load_langgraph_agenticai_app():
             graph_builder=GraphBuilder(model)
             try:
                  graph=graph_builder.setup_graph(usecase) #Returns the graph type from the graph builder class based on the user input
-                 print(user_message)
-                 DisplayResultStreamlit(usecase,graph,user_message).display_result_on_ui()
+                 DisplayResultStreamlit(usecase,graph,user_message,user_input.get("selected_llm")).display_result_on_ui()
             except Exception as e:
                  st.error(f"Error: Graph set up failed- {e}")
                  return
